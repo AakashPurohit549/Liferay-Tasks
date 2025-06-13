@@ -1,36 +1,34 @@
 package com.liferay.portlet.mvcportlet.portlet;
 
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portlet.configuration.config.EntityConfiguration;
-import com.liferay.portlet.constants.EntityCountPortletKeys;
-
-
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-
-import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portlet.configuration.config.EntityConfiguration;
+import com.liferay.portlet.constants.EntityCountPortletKeys;
+
+import java.io.IOException;
+import java.util.Map;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
-
-import java.io.IOException;
-import java.util.Map;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author ignek
  */
 @Component(
-	    configurationPid = "com.liferay.portlet.mvcportlet",
+	    configurationPid = EntityCountPortletKeys.CONFIGURATION_ID,
 	    immediate=true,
 	property = {
 		"com.liferay.portlet.display-category=category.sample",
@@ -50,14 +48,15 @@ public class EntityCountPortlet extends MVCPortlet {
     @Override
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
+    
 
         PortletPreferences prefs = renderRequest.getPreferences();
         
 	    renderRequest.setAttribute("entityConfiguration", _entityConfiguration);
 
-        boolean showJournalArticles = Boolean.parseBoolean(prefs.getValue("showJournalArticles", "false"));
-        boolean showDocuments = Boolean.parseBoolean(prefs.getValue("showDocuments", "false"));
-        boolean showUsers = Boolean.parseBoolean(prefs.getValue("showUsers", "false"));
+        boolean showJournalArticles = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_ARTICLES, "false"));
+        boolean showDocuments = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_DOCUMENTS, "false"));
+        boolean showUsers = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_USERS, "false"));
 
         int journalCount = -1;
         int docCount = -1;
@@ -70,13 +69,13 @@ public class EntityCountPortlet extends MVCPortlet {
 
         try {
             if (showJournalArticles) {
-                journalCount = JournalArticleLocalServiceUtil.getJournalArticlesCount();
+                journalCount = journalArticleLocalService.getJournalArticlesCount();
             }
             if (showDocuments) {
-                docCount = DLFileEntryLocalServiceUtil.getDLFileEntriesCount();
+                docCount = dLFileEntryLocalService.getDLFileEntriesCount();
             }
             if (showUsers) {
-                userCount = UserLocalServiceUtil.getUsersCount();
+                userCount = userLocalService.getUsersCount();
             }
         } catch (Exception e) {
             _log.error("Error fetching counts", e);
@@ -85,15 +84,15 @@ public class EntityCountPortlet extends MVCPortlet {
         try {
 
 	        if (_entityConfiguration.showJournalArticles()) {
-	            journalCountInter = JournalArticleLocalServiceUtil.getJournalArticlesCount();
+	            journalCountInter = journalArticleLocalService.getJournalArticlesCount();
 	        }
 
 	        if (_entityConfiguration.showDocuments()) {
-	            docCountInter = DLFileEntryLocalServiceUtil.getDLFileEntriesCount();
+	            docCountInter = dLFileEntryLocalService.getDLFileEntriesCount();
 	        }
 
 	        if (_entityConfiguration.showUsers()) {
-	            userCountInter = UserLocalServiceUtil.getUsersCount();
+	            userCountInter = userLocalService.getUsersCount();
 	        }
 
 	    } catch (Exception e) {
@@ -110,9 +109,9 @@ public class EntityCountPortlet extends MVCPortlet {
         renderRequest.setAttribute("userCountInter", userCountInter);
         
         
-        renderRequest.setAttribute("showJournalArticles", showJournalArticles);
-        renderRequest.setAttribute("showDocuments", showDocuments);
-        renderRequest.setAttribute("showUsers", showUsers);
+        renderRequest.setAttribute(EntityCountPortletKeys.SHOW_ARTICLES, showJournalArticles);
+        renderRequest.setAttribute(EntityCountPortletKeys.SHOW_DOCUMENTS, showDocuments);
+        renderRequest.setAttribute(EntityCountPortletKeys.SHOW_USERS, showUsers);
 
         super.doView(renderRequest, renderResponse);
     }
@@ -127,6 +126,16 @@ public class EntityCountPortlet extends MVCPortlet {
         _entityConfiguration = ConfigurableUtil.createConfigurable(EntityConfiguration.class, properties);
         
     }
+    
+	
+	@Reference
+	private JournalArticleLocalService journalArticleLocalService;
+	
+	@Reference
+	private DLFileEntryLocalService dLFileEntryLocalService;
+	
+	@Reference
+	private UserLocalService userLocalService;
 
     private volatile EntityConfiguration _entityConfiguration;  
 }
