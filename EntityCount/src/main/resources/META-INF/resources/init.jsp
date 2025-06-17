@@ -16,6 +16,9 @@
 <%
 PortletPreferences prefs = renderRequest.getPreferences();
 boolean showJournalArticles = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_ARTICLES, "false"));
-boolean showDocuments = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_DOCUMENTS, "false"));
+boolean showImages = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_IMAGES, "false"));
 boolean showUsers = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_USERS, "false"));
+boolean showEmployees = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_EMPLOYEES, "false"));
+boolean showCategories = Boolean.parseBoolean(prefs.getValue(EntityCountPortletKeys.SHOW_CATEGORIES, "false"));
+
 %>
