@@ -1,58 +1,76 @@
-<%@ include file="init.jsp" %>
+<%@ include file="init.jsp"%>
 
-<p>
-	<b><liferay-ui:message key="entitycount.caption"/></b>
-</p>
+<div class="container">
+
+	<div class="row g-2">
+		<c:if test="${showJournalArticles}">
+			<div class="col md-3">
+				<div class="card bg-light tileView">
+					<p class="card-body p-1 m-0 bg-light ">
+						<span class="customFontSize">Journal Articles</span> <span
+							class="font-weight-bold count"> ${journalCount} </span>
+					</p>
+				</div>
+			</div>
+		</c:if>
+
+		<c:if test="${showImages}">
+			<div class="col md-3">
+				<div class="card bg-light tileView">
+					<p class="card-body p-1 m-0 bg-light ">
+						<img class="customSizeImg" src="<%=request.getContextPath()%>/images/bookmark%201.png">
+
+						<span class="customFontSize">Images</span> <span
+							class="font-weight-bold count"> ${imageCount}</span>
+					</p>
+				</div>
+			</div>
+		</c:if>
+
+		<c:if test="${showUsers}">
+			<div class="col md-3">
+				<div class="card bg-light tileView">
+					<img class="customSizeImg" src="<%=request.getContextPath()%>/images/Vector%20(2).png">
+
+					<p class="card-body p-1 m-0 bg-light ">
+						<span class="customFontSize">Users</span> <span
+							class="font-weight-bold count"> ${userCount}</span>
+					</p>
+				</div>
+			</div>
+		</c:if>
 
 
-<h2>Portlet Content Counts</h2>
+		<c:if test="${showEmployees}">
+			<div class="col md-3">
+				<div class="card bg-light tileView">
+					<img  class="customSizeImg" src="<%=request.getContextPath()%>/images/Vector.png">
 
-<div class="row g-2">
-<c:if test="${showJournalArticles}">
-     <div class="col md-3">
-     <div class="card bg-light tileView">
-    <p class="card-body bg-light ">
-    <span class="text-bold">Journal Articles</span>
-    <span class="font-weight-bold right-most"> ${journalCount} </span></p>
-    </div>
-    </div>
-</c:if> 
+					<p class="card-body p-1 m-0 bg-light ">
+						<span class="customFontSize">Employees</span> <span
+							class="font-weight-bold count"> ${employees}</span>
+					</p>
+				</div>
+			</div>
+		</c:if>
 
-<c:if test="${showDocuments}">
-     <div class="col md-3">
-      <div class="card bg-light tileView">
-    <p class="card-body bg-light ">
-     <span class="text-bold">Documents</span>
-     <span class="font-weight-bold right-most"> ${docCount}</span></p>
-    </div>
-    </div>
-</c:if>
+		<c:if test="${showCategories}">
+			<div class="col md-3">
+				<div class="card bg-light tileView">
+					<img class="customSizeImg" src="<%=request.getContextPath()%>/images/bookmark%201.png">
 
-<c:if test="${showUsers}">
-     <div class="col md-3">
-      <div class="card bg-light tileView">
-    <p class="card-body bg-light ">
-     <span class="text-bold">Users</span>
-     <span class="font-weight-bold right-most"> ${userCount}</span></p>
-    </div>
-    </div>
-</c:if>
+					<p class="card-body p-1 m-0 bg-light ">
+						<span class="customFontSize">Technology</span> <span
+							class="font-weight-bold count"> ${categories}</span>
+					</p>
+				</div>
+			</div>
+		</c:if>
+
+	</div>
+
 </div>
 
 
-
-<h2>Test for System UI Content Counts</h2>
-
-<c:if test="${journalCountInter > -1 }">
-    <p>Journal Articles: ${journalCount}</p>
-</c:if>
-
-<c:if test="${docCountInter > -1}">
-    <p>Documents: ${docCountInter}</p>
-</c:if>
-
-<c:if test="${userCountInter > -1}">
-    <p>Users: ${userCountInter}</p>
-</c:if>
 
 
