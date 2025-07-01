@@ -1,0 +1,201 @@
+/* These inject tags are used for dynamically creating imports for themelet styles, you can place them where ever you like in this file. */
+
+/* inject:imports */
+
+@import 'liferay-font-awesome/scss/font-awesome';
+@import 'liferay-font-awesome/scss/glyphicons';
+@import "compass";
+@import "mixins";
+
+/* endinject */
+
+/* This file allows you to override default styles in one central location for easier upgrade and maintenance. */
+
+
+#wrapper {
+  padding-left: 0;
+
+  #main-layout {
+    min-height: 100vh;
+  }
+
+  #sidebar {
+    width: 260px;
+    position: fixed;
+    border-right: 1px solid #e0e0e0;
+    padding: 20px;
+  }
+
+
+  .custom_header_style {
+    display: flex;
+    justify-content: end;
+
+    #portlet_com_liferay_portal_search_web_search_bar_portlet_SearchBarPortlet_INSTANCE_templateSearch {
+      width: 291.23px;
+      display: flex;
+      justify-self: flex-end;
+      margin-right: 0px;
+
+    }
+
+    .bell-style {
+      margin-top: 8px;
+      font-size: 22px;
+    }
+
+  }
+
+  #content {
+    flex: 1;
+    margin-left: 260px;
+    padding: 5px;
+
+  //  @include respond-to(phone, tablet) {
+  //   margin-left: 0;
+  //  }
+  }
+
+
+  .portlet-title-text {
+    display: none;
+  }
+
+  #banner {
+    display: none;
+  }
+
+  .sectionContainer {
+    overflow: hidden;
+  }
+
+  .custom-header {
+    height: 70px;
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  .searchBar input {
+    width: 250px;
+    height: 38px;
+    background-color: #f1f3f5;
+    border: none;
+    font-size: 14px;
+  }
+
+  .searchBar input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+  }
+
+  .searchBar button {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .profile-pic img {
+    object-fit: cover;
+  }
+
+
+  #sidebar {
+    min-height: 100vh;
+    background-color: #F0F1F1;
+    border-right: 1px solid #eee;
+  }
+
+
+  .nav2 .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #333;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Hover style */
+  .nav2 .nav-link:hover {
+    background-color: #e0f7f8;
+    color: #00979E;
+  }
+
+  /* Active link style */
+  .nav2 .nav-link.active {
+    background-color: #00979E;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+
+  .custom-header {
+    font-size: 20px;
+    color: #000000;
+    font-weight: 700;
+    line-height: 32px;
+    margin-left: 12px;
+    text-align: center;
+  }
+
+  .ignekcolorbox {
+    width: 8px;
+    height: 35px;
+    border: 4px sloid 00979E;
+    background-color: #00979E;
+  }
+
+  .sign-out-div {
+    margin-top: 110px;
+    margin-left: 65px;
+  }
+
+  .sign-out {
+    text-decoration: none;
+    margin-bottom: 0;
+    color: #000000;
+    font-size: 14px;
+    font-weight: 500;
+
+  }
+
+  .myprofileimg {
+    clip-path: ellipse(50% 37%);
+    width: 160px;
+    height: 200px;
+  }
+
+  .role {
+
+    font-size: 14px;
+    font-weight: 500;
+    color: #00979E;
+
+  }
+
+
+  #sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background-color: #F0F1F1;
+    transition: all 0.3s ease;
+
+  //   @include respond-to(phone, tablet) {
+  //     position: relative;
+  //     // left: -260px;
+  //     // top: 0;
+  //     z-index: 1000;
+  //     height: 100vh;
+  //     width: 140px;
+  //     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  //   }
+
+  //   &.sidebar-open {
+  //     left: 0;
+
+  //     @include respond-to(phone, tablet) {
+  //       display: block;
+  //     }
+  //   }
+  // }
+  }
+}
