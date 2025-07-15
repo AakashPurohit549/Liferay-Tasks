@@ -51,7 +51,7 @@ public class EmployeeManagementToolbarDisplayContext extends SearchContainerMana
 	
 	@Override
 	protected String[] getNavigationKeys() {
-		return new String[]{"all", "designation-type:Liferay Developer", "city-type:Ahmedabad"};
+		return new String[]{"all", "designation-type:Liferay Developer", "city-type:Banglore"};
 	}
 
 	@Override
