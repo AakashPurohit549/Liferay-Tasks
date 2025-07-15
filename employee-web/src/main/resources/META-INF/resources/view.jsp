@@ -13,10 +13,35 @@ EmployeeManagementToolbarDisplayContext employeeManagementToolbarDisplayContext 
 </aui:form>
 
 
-
 <div class="container-fluid container-fluid-max-xl container-view">
 
+	<div class="modal fade" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
 
+				<!-- Modal Header -->
+				<div class="modal-header">
+
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<!-- Modal body -->
+				<div class="modal-body">
+					<span class="title-heading">Are you sure you want to delete
+						this employee ?</span>
+				</div>
+
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">No</button>
+					<button type="button" class="employee-submit-btn"
+						data-dismiss="modal" id="confirmDeleteBtn">Yes</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 	<liferay-ui:search-container
@@ -28,15 +53,15 @@ EmployeeManagementToolbarDisplayContext employeeManagementToolbarDisplayContext 
 			className="employee.web.dto.EmployeeDTO" modelVar="employeeDTO">
 
 
-			<liferay-ui:search-container-column-text name="First Name"
-				orderable="true" orderableProperty="first-name"
-				cssClass="text-center" value="<%=employeeDTO.getFirstName()%>" />
-
 
 			<liferay-ui:search-container-column-text name="Employee ID"
 				cssClass="text-center"
 				value="<%=Long.toString(employeeDTO.getEmployeeId())%>" />
 
+
+			<liferay-ui:search-container-column-text name="First Name"
+				orderable="true" orderableProperty="first-name"
+				cssClass="text-center" value="<%=employeeDTO.getFirstName()%>" />
 
 			<liferay-ui:search-container-column-text name="Last Name"
 				cssClass="text-center" value="<%=employeeDTO.getLastName()%>" />
@@ -64,8 +89,3 @@ EmployeeManagementToolbarDisplayContext employeeManagementToolbarDisplayContext 
 	</liferay-ui:search-container>
 
 </div>
-
-
-<!--  delta="1" deltaConfigurable="true"  -->
-
-<%-- 	searchContainer="<%=searchContainer %>" --%>
