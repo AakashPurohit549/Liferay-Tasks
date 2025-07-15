@@ -1,5 +1,7 @@
 package employee.web.display.context;
 
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.osgi.service.component.annotations.Reference;
 
 import employee.service.model.Employee;
+import employee.service.model.EmployeeTable;
 import employee.service.service.EmployeeLocalServiceUtil;
 import employee.web.constants.EmployeeWebPortletKeys;
 import employee.web.dto.EmployeeDTO;
@@ -41,7 +44,7 @@ public class EmployeeManagementDisplayContext {
 	private SearchContainer<EmployeeDTO> _employeeSearchContainer;
 	private String _orderByType; 
 	private String _keywords;
-	private String _filterByType;
+	private String _navigation;
 	private String _orderBy;
 	private Employee employee;
 	
@@ -77,8 +80,6 @@ public class EmployeeManagementDisplayContext {
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
 		_themeDisplay = (ThemeDisplay) _httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY);
-		
-
 	
 	}
   
@@ -95,56 +96,56 @@ public class EmployeeManagementDisplayContext {
 				getPortletURL(), null, null);
 	
 		employeeSearchContainer.setOrderByCol(getOrderBy());
-		employeeSearchContainer.setOrderByType(getOrderByType());
+		employeeSearchContainer.setOrderByType(getOrderByType());	
 		
-			
-		
-	//	List<EmployeeDTO> employeeDTOSerachList = new ArrayList<EmployeeDTO>();
-		List<Employee> employeeList = new ArrayList<>(employeeLocalServiceutil.getEmployees(-1, -1));
-		
-		//System.out.println(employeeList);
-		
-		
+		List<Employee> employeeList = new ArrayList<>(employeeLocalServiceutil.getEmployees(0,5));
 	
-				String keywords = getKeywords();
-				if (Validator.isNotNull(keywords)) {
-					employeeList = employeeList.stream()
-							.filter(emp -> emp.getFirstName().toLowerCase().contains(keywords.toLowerCase())
-									|| emp.getLastName().toLowerCase().contains(keywords.toLowerCase())
-									|| emp.getEmailAddress().toLowerCase().contains(keywords.toLowerCase()))
-							.collect(Collectors.toList());
-				}
+		//searching
+		String keywords = getKeywords();
+		if (Validator.isNotNull(keywords))
+		{
+					  DSLQuery query = DSLQueryFactoryUtil
+					    .select()
+					    .from(EmployeeTable.INSTANCE)
+					    .where(EmployeeTable.INSTANCE.firstName.like(keywords));
+		
+					  employeeList = employeeLocalServiceutil.dslQuery(query);
+		}
 				
-				
-				
-				String filterBy = getFilterByType(); 
-				if (Validator.isNotNull(filterBy) && filterBy.contains(":")) {
-					String[] parts = filterBy.split(":");
-					if (parts.length == 2) {
-						String field = parts[0];
-						String value = parts[1];
+		//filtering				
+		String filterBy = getNavigation(); 
+		if (filterBy != null && filterBy.contains(":")) {
+		    System.out.println(filterBy);
+		    String[] parts = filterBy.split(":");
+		    if (parts.length == 2) {
+		        String field = parts[0];
+		        String value = parts[1];
 
-						switch (field) {
-							case "designation-type" -> employeeList = employeeList.stream()
-									.filter(emp -> value.equalsIgnoreCase(emp.getDesignation()))
-									.collect(Collectors.toList());
-							case "city-type" -> employeeList = employeeList.stream()
-									.filter(emp -> value.equalsIgnoreCase(emp.getCity()))
-									.collect(Collectors.toList());
-						}
-					}
-				}
+		        switch (field) {
+		            case "designation-type":
+		                employeeList = employeeList.stream()
+		                    .filter(emp -> value.equalsIgnoreCase(emp.getDesignation()))
+		                    .collect(Collectors.toList());
+		                break;
+		            case "city-type":
+		                employeeList = employeeList.stream()
+		                    .filter(emp -> value.equalsIgnoreCase(emp.getCity()))
+		                    .collect(Collectors.toList());
+		                break;
+		        }
+		    }
+		}
 
 			
-				Comparator<Employee> comparator = Comparator.comparing(Employee::getFirstName, String.CASE_INSENSITIVE_ORDER);
-				switch (getOrderBy()) {
-					case "designation" -> comparator = Comparator.comparing(Employee::getDesignation, String.CASE_INSENSITIVE_ORDER);
-					case "first-name" -> comparator = Comparator.comparing(Employee::getFirstName, String.CASE_INSENSITIVE_ORDER);
-				}
-				if ("desc".equalsIgnoreCase(getOrderByType())) {
-					comparator = comparator.reversed();
-				}
-				employeeList.sort(comparator);
+//				Comparator<Employee> comparator = Comparator.comparing(Employee::getFirstName, String.CASE_INSENSITIVE_ORDER);
+//				switch (getOrderBy()) {
+//					case "designation" -> comparator = Comparator.comparing(Employee::getDesignation, String.CASE_INSENSITIVE_ORDER);
+//					case "first-name" -> comparator = Comparator.comparing(Employee::getFirstName, String.CASE_INSENSITIVE_ORDER);
+//				}
+//				if ("desc".equalsIgnoreCase(getOrderByType())) {
+//					comparator = comparator.reversed();
+//				}
+//				employeeList.sort(comparator);
 
 				
 		
@@ -160,52 +161,12 @@ public class EmployeeManagementDisplayContext {
 					return dto;
 				}).collect(Collectors.toList());
 				
-				
-				//System.out.println("Employee DTO Id if exixts : ");
-				
 				employeeSearchContainer.setResultsAndTotal(dtoList);
 				_employeeSearchContainer = employeeSearchContainer;
 				return _employeeSearchContainer;
 				
   }
-				
-
-		
-//		for(Employee employee : employeeList) {
-//			
-//			EmployeeDTO employeeDTO = new EmployeeDTO();
-//			
-//			employeeDTO.setFirstName(employee.getFirstName());
-//			
-//			//System.out.println("Object in the loop : " + employeeDTO.getFirstName());
-//			
-//			
-//			employeeDTO.setLastName(employee.getLastName());
-//			employeeDTO.setDesignation(employee.getDesignation());
-//			employeeDTO.setEmailAddress(employee.getEmailAddress());
-//			employeeDTO.setCity(employee.getCity());
-//			employeeDTO.setPhoneNumber(employee.getPhoneNumber());
-//			
-//			employeeDTOSerachList.add(employeeDTO);
-//			
-//			//System.out.println("Object in the loop : " + employeeDTO);
-//			
-//		}
-//
-//		//System.out.println("In the search conatiner method of java class" + employeeDTOSerachList);
-//		
-//		employeeSearchContainer.setResultsAndTotal(employeeDTOSerachList);
-//		employeeSearchContainer.setOrderByType(getOrderByType());
-//		
-//		
-//		_employeeSearchContainer = employeeSearchContainer;
-//		
-//		return _employeeSearchContainer;
-//		
-//	}
-//	
-	
-	
+					
 
 	public PortletURL getPortletURL() {
 		PortletURL portletURL = _liferayPortletResponse.createRenderURL();
@@ -225,6 +186,11 @@ public class EmployeeManagementDisplayContext {
 		String filterByType = ParamUtil.getString(_httpServletRequest, "filterByType");
 		if (Validator.isNotNull(filterByType)) {
 			portletURL.getRenderParameters().setValue("filterByType", filterByType);
+		}
+		
+		String navigation = ParamUtil.getString(_httpServletRequest, "navigation");
+		if (Validator.isNotNull(filterByType)) {
+			portletURL.getRenderParameters().setValue("navigation", navigation);
 		}
 
 		String delta = ParamUtil.getString(_httpServletRequest, "delta");
@@ -292,13 +258,13 @@ public class EmployeeManagementDisplayContext {
 	}
 	
 	
-	public String getFilterByType() {
-		if (_filterByType == null) {
-			_filterByType = ParamUtil.getString(_httpServletRequest, getFilterByTypeParam(), "");
+	public String getNavigation() {
+		if (_navigation != null) {
+			return _navigation;
 		}
-		return _filterByType;
-	}
-	
-	
+
+		_navigation = ParamUtil.getString(_httpServletRequest, "navigation");
+		return _navigation;
+	}	
 	
 }
