@@ -1,5 +1,7 @@
 package employee.web.actions;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -31,28 +33,25 @@ public class DeleteEmployeeMVCAction extends BaseMVCActionCommand {
 		long companyId = themeDisplay.getCompanyId();
 
 		try {
-
-			// first get the userId related to the employee
-			// As user audit feild is used here
+			
 			Employee employee = employeeLocalServcice.getEmployee(employeeId);
 
-			// email is mapped to the user and employee
 			String userEmail = employee.getEmailAddress();
 
 			System.out.println("Email : " + userEmail);
 
 			User user = userLocalService.getUserByEmailAddress(companyId, userEmail);
-
-			System.out.println("Employee Deleted : " + user);
+			
+			_log.info("User Deleted : " + user);
 
 			userLocalService.deleteUser(user);
 
 			employeeLocalServcice.deleteEmployee(employeeId);
-
-			System.out.println("---########## Employee and User deleted ##########" + employee);
+			
+			_log.info("Employee and User deleted : " + employee);
 
 		} catch (Exception e) {
-			System.out.println(e);
+			_log.error("Error in the delete method", e);
 		}
 	}
 
@@ -61,4 +60,7 @@ public class DeleteEmployeeMVCAction extends BaseMVCActionCommand {
 
 	@Reference
 	private UserLocalService userLocalService;
+	
+    private static final Log _log = LogFactoryUtil.getLog(DeleteEmployeeMVCAction.class);
+
 }
